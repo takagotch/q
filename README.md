@@ -14,147 +14,305 @@ step1(function(value1){
 
 Q.fcall(promisedStep1)
 .then(promisedStep2)
-.then()
-.then()
-.then()
-.catch()
+.then(promisedStep3)
+.then(promisedStep4)
+.then(function (value4) {
+})
+.catch(function (error) {
+})
 .done();
 
 promiseMeSomething()
-.then();
+.then(function (value) {
+}, function (reason) {
+});
 
 var outputpromise = getInputPromise()
-.then();
+.then(function (input) {
+}, function (reason) {
+});
 
 var outputPromise = getInputPromise()
-.then();
+.then(function (value) {
+});
 
 var outputPromise = getInputPromise()
-.then();
+.then(null, function (error) {
+});
 
 var outputPromise = getInputPromise()
-.fail();
+.fail(function (error) {
+});
 
 var outputPromise = getInputPromise()
-.fin();
+.fin(function () {
+});
 
 return getUsername()
-.then();
+.then(function (username) {
+  return getUser(username)
+  .then(function (user) {
+  })
+});
 
-return getUsername()
-.then()
-.then();
-
-function authenticate(){
+return getUsername() {
+  return getUsername()
+  .then(function (username) {
+    return getUser(username);
+  })
+  .then(function (user) {
+    return getPassword()
+    .then(function (password) {
+      if (user.passwordHash !== hash(password)) {
+        throw new Error("Can't authenticate");
+      }
+    });
+  });
 }
 
-return Q.all();
+return Q.all([
+  eventualAdd(2, 2),
+  eventualAdd(10, 20)
+]);
 
-function eventualAdd(){}
+function authenticate(a, b){
+  return Q.spread([a, b], function (a, b) {
+    return a + b;
+  })
+}
 
 return getUsername()
-.then()
-.spread();
+.then(function (username) {
+  return [username, getUser(username)];
+})
+.spread(function (username, user) {
+});
 
-Q.allSettled()
-.then();
+Q.allSettled(promises)
+.then(function (results) {
+  results.forEach(function (result) {
+    if (result.state === "fulfilled") {
+      var value = result.value;
+    } else {
+      var reason = result.reason;
+    }
+  });
+});
 
-Q.any()
-.then();
 
-return foo().then().then().then();
+Q.any(promises)
+.then(function (first) {
+}, function (error) {
+});
 
-var funcs = [];
-var result = Q();
-funcs.forEach();
+return foo(initialVal).then(bar).then(baz).then(qux);
+
+
+var funcs = [foo, bar, baz, qux];
+
+var result = Q(initialVal);
+funcs.forEach(function (f) {
+  result = result.then(f);
+});
 return result;
 
-return funcs.resuce();
 
-return funcs.reduce();
+return funcs.resuce(function (soFar, f) {
+  return soFar.then(f);
+}, Q(initialVal));
+
+
+return fucns.reduce(Q.when, Q(initialVal));
+
 
 return foo()
-.then();
+.then(function (value) {
+  throw new Error("Can't bar.");
+}, function (error) {
+});
+
 
 return foo()
-.then()
-.fall();
+.then(function (value) {
+  throw new Error("Can't bar.");
+})
+.fail(function (error) {
+});
+
 
 return uploadFile()
-.then();
+.then(function () {
+}, function (err) {
+}, function (progress) {
+});
 
-return uploadFile().progress();
+
+return uploadFile().progress(function (progress) {
+});
+
 
 return foo()
-.then();
+.then(function () {
+  return "bar";
+});
+
 
 foo()
-.then()
+.then(function () {
+  return "bar";
+})
 .done();
 
-return Q.fcall();
 
-return Q.fcall();
+return Q.fcall(function () {
+  return 10;
+});
 
-return Q.fcall();
 
-var deferred = Q.defer();
-FS.readFile();
-return deferred.promise;
+return Q.fcall(function () {
+  throw new Error("Can't do it");
+});
 
-deferred.reject();
-var rejection = Q.fcall();
-deferred.resolve();
 
-function delay(){}
+return Q.fcall(eventualAdd, 2, 2);
 
-function timeout(){}
-
-function requestOkText(url){}
-
-requestOkText()
-.then();
-
-function requestOkText(){}
-
-return Q.when();
-
-return Q.all();
-
-return Q.fcall()
-.all();
-
-return Q()
-.then();
-
-return Q.invoke()
-.then();
-
-return Q.fcall()
-.then();
-
-return Q.fcall()
-.get()
-.get();
-
-return Q.nfcall();
-return Q.nfapply();
-
-return Q.ninvoke();
-return Q.npost();
-
-var readFile = Q.denodeify();
-return readFile();
-var redisClient = Q.nbind();
-return redisClientGet();
 
 var deferred = Q.defer();
-FS.readFile();
+FS/readFile("foo.txt", "utf-8", function (error, text) {
+  if (error) {
+    deferred.reject(new Error(error));
+  } else {
+    deferred/resolve(text);
+  }
+});
 return deferred.promise;
 
-function theDepthsOfMyProgram(){}
 
-QlongStackSupport = true;
+deferred.reject(new Error("Can't do it"));
+
+var rejection = Q.fcall(function () {
+  throw new Error("Can't do it");
+});
+deferred.resolve(rejection);
+
+
+function delay(ms) {
+  var derred = Q.defer();
+  setTimeout(deferred.resolve, ms);
+  return deferred.promise;
+}
+
+
+function timeout(promise, ms) {
+  var derred = Q.defer();
+  Q.when(promise, deferred.resolve);
+  delay(ms).then(function () {
+    deferred.reject(new Error("Timed out"));
+  });
+  return deferred.promise;
+}
+
+
+function requestOkText(url) {
+    return Q.Promise(function(resolve, reject, notify) {
+  
+    var request = new XMLHttpRequest();
+    var deferred = Q.defer();
+  
+    request.open("GET", url, true);
+    request.onload = onload;
+    request.oneerror = onerror;
+    request.onprogress = onprogress;
+    request.send();
+  
+    function onload() {
+      if (request.status === 200) {
+        deferred.resolve(request.responseText);
+      } else {
+        deferred.reject(new Error("Status code was " + request.status));
+      }
+    }
+  
+    function onerror() {
+      deferred.reject(new Error("Can't XHR " + JSON.stringify(url)));
+    }
+  
+    function onprogress(event) {
+      deferred.notify(event.loaded / event.total);
+    }
+  
+  });
+}
+
+
+return Q.when(valueOrPromise, function (value) {
+}, function (error) {
+});
+
+
+return Q.all([a, b]);
+
+return Q.fcall(function () {
+  return [a, b];
+})
+  .all();
+
+return Q($.ajax(...))
+.then(function () {
+});
+
+
+return Q.invoke($, 'ajax', ...)
+.then(function () {
+});
+
+
+return Q.fcall(function () {
+  return [{ foo: "bar" }, { foo: "baz" }];
+})
+.then(function (value) {
+  return value[0].foo;
+});
+
+
+return Q.fcall(function () {
+  return [{ foo: "bar" }, { foo: "baz" }];
+})
+.get(0)
+.get("foo");
+
+
+return Q.nfcall(FS.readFile, "foo.txt", "utf-8");
+return Q.nfapply(FS.readFile, ["foo.txt", "utf-8"]);
+
+
+return Q.ninvoke(redisClient, "get", "user:1:id");
+return Q.npost(redisClient, "get", ["user:1:id"]);
+
+var readFile = Q.denodify(FS.readFile);
+return readFile("foo.txt", "utf-8");
+
+var redisClientGet = Q.nbind(redisClient.get, redisClient);
+return redisClientGet("user:1:id");
+
+
+var deferred = Q.defer();
+FS.readFile("foo.txt", "utf-8", deferred.makeResolve());
+return deferred.promise;
+
+
+function theDepthsOfMyProgram() {
+  Q.delay(100).done(function explode() {
+    throw new Error("boo!");
+  });
+}
+
+theDepthsOfMyProgram();
+
+Q.longStackSupport = true;
+
+
+Q_DEBUG=1 node server.js
 ```
 
 ```
